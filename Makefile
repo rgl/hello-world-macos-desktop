@@ -8,6 +8,7 @@ info:
 
 build:
 	xcodebuild
+	file build/Release/HelloWorldMacOsDesktop.app/Contents/MacOS/HelloWorldMacOsDesktop
 
 clean:
 	xcodebuild clean
