@@ -1,0 +1,39 @@
+name: Build
+on: [push]
+jobs:
+  build:
+    runs-on: macos-13
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Information
+        run: make info
+      - name: Build
+        run: make build
+      - name: Build artifact
+        run: |
+          pushd build/Release
+          tar czf HelloWorldMacOsDesktop-amd64.tgz HelloWorldMacOsDesktop.app
+          tar tf HelloWorldMacOsDesktop-amd64.tgz
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-amd64
+          path: |
+            build/Release/HelloWorldMacOsDesktop-amd64.tgz
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-22.04
+    needs:
+      - build
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+      - name: Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: true
+          artifacts: 'app-amd64/HelloWorldMacOsDesktop-amd64.tgz'
