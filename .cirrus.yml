@@ -1,0 +1,11 @@
+macos_instance:
+  image: ghcr.io/cirruslabs/macos-ventura-base:latest
+task:
+  script: |
+    make info
+    make build
+    pushd build/Release
+    tar czf HelloWorldMacOsDesktop-arm64.tgz HelloWorldMacOsDesktop.app
+    tar tf HelloWorldMacOsDesktop-arm64.tgz
+  binaries_artifacts:
+    path: HelloWorldMacOsDesktop-arm64.tgz
